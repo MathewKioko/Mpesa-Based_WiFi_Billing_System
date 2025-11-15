@@ -543,9 +543,10 @@ nextApp.prepare().then(() => {
     res.json({ message: "Welcome to the WiFi Billing System API!" });
   });
 
-  // -------------------- ROOT ROUTE (API STATUS) --------------------
-  app.get("/", (req, res) => {
-    res.json({ message: "WiFi Billing System API is running", status: "OK" });
+  // -------------------- SERVE NEXT.JS FRONTEND --------------------
+  // Handle all other routes with Next.js (MUST BE FIRST)
+  app.all("*", (req, res) => {
+    return handle(req, res);
   });
 
   // -------------------- START SERVER --------------------
@@ -611,12 +612,6 @@ nextApp.prepare().then(() => {
 
   global.emitLoanEvent = emitLoanEvent;
   global.emitSupportEvent = emitSupportEvent;
-
-  // -------------------- SERVE NEXT.JS FRONTEND --------------------
-  // Handle all other routes with Next.js
-  app.all("*", (req, res) => {
-    return handle(req, res);
-  });
 
   // -------------------- START SERVER --------------------
   server.listen(PORT, '0.0.0.0', () => {
