@@ -5,9 +5,9 @@
   "build": {
     // Install dependencies, build, and export static files
     "command": "pnpm install --no-frozen-lockfile && pnpm build && pnpm export",
-    // The folder containing the final output after build/export
+    // Folder containing the output after export
     "directory": "wifi_billing/frontend/out",
-    // Run the build command inside the frontend folder (NOT out/)
+    // Run the build command inside the frontend source folder
     "cwd": "wifi_billing/frontend"
   }
 }
