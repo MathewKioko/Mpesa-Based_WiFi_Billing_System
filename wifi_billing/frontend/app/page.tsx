@@ -202,50 +202,50 @@ const handleLoan = async () => {
 }
 
 
-  // ================= FIX 4 =================
-  // Safe polling with package guard
-  const pollPaymentStatus = async (txnId: string) => {
-    let attempts = 0
-    const maxAttempts = 30
+const pollPaymentStatus = async (txnId: string) => {
+  let attempts = 0
+  const maxAttempts = 30
 
-    const poll = async () => {
-      const selectedPackage = getSelectedPackage()
-      if (!selectedPackage) return
+  const poll = async () => {
+    const selectedPackage = getSelectedPackage()
+    if (!selectedPackage) return
 
-      try {
-        const response = await apiClient.checkPaymentStatus(txnId)
-        if (response.success && response.data?.status === "completed") {
-          setPaymentData({
-            transactionId: txnId,
-            amount,
-            package: selectedPackage.label,
-            phone: `+254${phone.substring(1)}`,
-            mpesaRef: response.data.mpesaRef,
-            expiresAt: response.data.expiresAt,
-            speed: selectedPackage.speed,
-          })
-          setStatus("completed")
-          toast.dismiss("payment-loading")
-          toast.success("Payment successful")
-          setShowSuccessModal(true)
-          return
-        }
-
-        attempts++
-        if (attempts < maxAttempts) {
-          setTimeout(poll, 10000)
-        } else {
-          throw new Error("Timeout")
-        }
-      } catch {
-        setStatus("failed")
+    try {
+      const response = await apiClient.checkPaymentStatus(txnId)
+      if (response.success && response.data?.status === "completed") {
+        setPaymentData({
+          transactionId: txnId,
+          amount,
+          packageLabel: selectedPackage.label,
+          phone: `+254${phone.substring(1)}`,
+          mpesaRef: response.data.mpesaRef,
+          expiresAt: response.data.expiresAt,
+          speed: selectedPackage.speed,
+        })
+        setStatus("completed")
         toast.dismiss("payment-loading")
-        toast.error("Payment timeout or failed")
+        toast.success("Payment successful")
+        setShowSuccessModal(true)
+        return
       }
-    }
 
-    poll()
+      // Increment attempts and continue polling
+      attempts++
+      if (attempts < maxAttempts) {
+        setTimeout(poll, 10000)
+      } else {
+        throw new Error("Timeout")
+      }
+    } catch {
+      setStatus("failed")
+      toast.dismiss("payment-loading")
+      toast.error("Payment timeout or failed")
+    }
   }
+
+  poll()
+}
+
   const handlePhoneChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value
     setPhone(value)
