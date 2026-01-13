@@ -1,5 +1,3 @@
-// next.config.js
-
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   // Required for Cloudflare Pages static hosting
@@ -9,25 +7,7 @@ const nextConfig = {
   // but keeping this explicit is fine
   eslint: {
     ignoreDuringBuilds: true,
-  },/** @type {import('next').NextConfig} */
-const nextConfig = {
-  output: "export",
-  eslint: {
-    ignoreDuringBuilds: true,
   },
-  typescript: {
-    ignoreBuildErrors: true,
-  },
-  images: {
-    unoptimized: true,
-  },
-  env: {
-    NEXT_PUBLIC_API_URL: process.env.NEXT_PUBLIC_API_URL,
-  },
-};
-
-export default nextConfig;
-
 
   // Static export cannot rely on runtime type checks
   typescript: {
@@ -43,6 +23,16 @@ export default nextConfig;
   env: {
     NEXT_PUBLIC_API_URL: process.env.NEXT_PUBLIC_API_URL,
   },
+
+  // Optional: Custom Webpack configuration
+  webpack(config) {
+    // Split large chunks to avoid Cloudflare Pages 25MB limit
+    config.optimization.splitChunks = {
+      chunks: "all",
+      maxSize: 25 * 1024 * 1024, // 25MB
+    };
+    return config;
+  },
 };
 
-export default nextConfig;
+module.exports = nextConfig;
