@@ -1,8 +1,5 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  experimental: {
-    appDir: true, // Enable App Router (Next.js 14+)
-  },
   eslint: {
     ignoreDuringBuilds: true, // Skip ESLint during build
   },
